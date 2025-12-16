@@ -8,6 +8,8 @@ from .gif_creator import GIFCreator
 from .duckling_detector import DucklingDetector
 from .realistic_animator import RealisticDucklingAnimator
 from .handdrawn_animator import HandDrawnAnimator
+from .animation_parser import AnimationParser
+from .sequence_composer import SequenceComposer
 
 
 class AnimationDuckPipeline:
@@ -21,7 +23,8 @@ class AnimationDuckPipeline:
                  duration=100,
                  loop=0,
                  realistic_mode=False,
-                 hand_drawn_mode=False):
+                 hand_drawn_mode=False,
+                 text_description=None):
         """
         Initialize the animation pipeline.
         
@@ -37,12 +40,26 @@ class AnimationDuckPipeline:
             loop: Number of times to loop (0 = infinite)
             realistic_mode: Enable realistic duckling detection and animation (default: False)
             hand_drawn_mode: Enable hand-drawn cartoon style animation (default: False)
+            text_description: Natural language description for complex sequences (default: None)
         """
         self.comic_effect = ComicStyleEffect(edge_thickness, color_levels)
         self.frame_generator = AnimationFrameGenerator(num_frames, animation_type)
         self.gif_creator = GIFCreator(duration, loop)
         self.realistic_mode = realistic_mode
         self.hand_drawn_mode = hand_drawn_mode
+        self.text_description = text_description
+        
+        # Parse text description if provided
+        if text_description:
+            self.parser = AnimationParser()
+            self.parsed_sequence = self.parser.parse(text_description)
+            # Override num_frames based on complexity
+            num_frames = self.parser.get_suggested_frames(self.parsed_sequence)
+            duration = self.parser.get_suggested_duration(self.parsed_sequence)
+            # Force hand-drawn mode for text descriptions (best quality)
+            hand_drawn_mode = True
+            self.hand_drawn_mode = True
+            self.gif_creator = GIFCreator(duration, loop)
         
         if realistic_mode or hand_drawn_mode:
             self.detector = DucklingDetector()
@@ -50,6 +67,10 @@ class AnimationDuckPipeline:
                 self.hand_drawn_animator = HandDrawnAnimator(num_frames, animation_type)
             else:
                 self.realistic_animator = RealisticDucklingAnimator(num_frames, animation_type)
+        
+        # Sequence composer for complex animations
+        if text_description:
+            self.composer = SequenceComposer(num_frames)
     
     def process(self, input_path, output_path, apply_comic_style=True):
         """
@@ -80,7 +101,15 @@ class AnimationDuckPipeline:
                 image = self.comic_effect.apply(image)
         
         # Generate animation frames
-        if self.hand_drawn_mode:
+        if self.text_description:
+            # Complex sequence from text description
+            print(f"Parsing animation description: '{self.text_description}'")
+            print(f"Detected {len(self.parsed_sequence['sequences'])} action sequences")
+            print(f"Detecting duckling and body parts...")
+            parts = self.detector.detect_duckling(image)
+            print(f"Generating {self.composer.num_frames} frames from text description...")
+            frames = self.composer.compose(image, parts, self.parsed_sequence, self.hand_drawn_animator)
+        elif self.hand_drawn_mode:
             print(f"Detecting duckling and body parts...")
             parts = self.detector.detect_duckling(image)
             print(f"Generating {self.hand_drawn_animator.num_frames} hand-drawn animation frames ({self.hand_drawn_animator.animation_type})...")

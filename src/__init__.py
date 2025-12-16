@@ -9,6 +9,8 @@ from .gif_creator import GIFCreator
 from .duckling_detector import DucklingDetector
 from .realistic_animator import RealisticDucklingAnimator
 from .handdrawn_animator import HandDrawnAnimator
+from .animation_parser import AnimationParser
+from .sequence_composer import SequenceComposer
 
 __version__ = "1.0.0"
 __all__ = [
@@ -18,5 +20,7 @@ __all__ = [
     'GIFCreator',
     'DucklingDetector',
     'RealisticDucklingAnimator',
-    'HandDrawnAnimator'
+    'HandDrawnAnimator',
+    'AnimationParser',
+    'SequenceComposer'
 ]
