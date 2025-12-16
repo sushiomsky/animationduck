@@ -350,6 +350,7 @@ class RealisticDucklingAnimator:
         for eye_key in ['left_eye', 'right_eye']:
             if eye_key in parts:
                 x, y, r = parts[eye_key]
+                # Apply both offsets consistently
                 x += x_offset
                 y += y_offset
                 
@@ -369,7 +370,7 @@ class RealisticDucklingAnimator:
         
         return np.array(pil_img)
     
-    def _draw_closed_eyes(self, canvas, parts, y_offset=0):
+    def _draw_closed_eyes(self, canvas, parts, y_offset=0, x_offset=0):
         """Draw closed eyes (blinking)."""
         if 'left_eye' not in parts or 'right_eye' not in parts:
             return canvas
@@ -380,6 +381,8 @@ class RealisticDucklingAnimator:
         for eye_key in ['left_eye', 'right_eye']:
             if eye_key in parts:
                 x, y, r = parts[eye_key]
+                # Apply both offsets consistently
+                x += x_offset
                 y += y_offset
                 
                 # Draw closed eye as a line

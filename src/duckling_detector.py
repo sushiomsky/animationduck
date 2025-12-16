@@ -219,22 +219,36 @@ class DucklingDetector:
         Returns:
             Dictionary with eye positions
         """
+        # Validate head dimensions
+        if head_w <= 0 or head_h <= 0:
+            # Return default eye positions if head dimensions are invalid
+            eye_radius = 5  # Fallback default
+            return {
+                'left_eye': (head_x + 10, head_y + 10, eye_radius),
+                'right_eye': (head_x + 20, head_y + 10, eye_radius)
+            }
+        
         # Extract head region
         head_region = region[head_y:head_y+head_h, head_x:head_x+head_w]
         
         # Convert to grayscale
         gray = cv2.cvtColor(head_region, cv2.COLOR_RGB2GRAY)
         
+        # Calculate safe radius values
+        min_dimension = min(head_w, head_h)
+        min_radius = max(1, int(min_dimension * 0.05))
+        max_radius = max(min_radius + 1, int(min_dimension * 0.15))
+        
         # Use Hough circles to detect eyes (they're often dark and circular)
         circles = cv2.HoughCircles(
             gray,
             cv2.HOUGH_GRADIENT,
             dp=1,
-            minDist=int(head_w * 0.3),
+            minDist=max(1, int(head_w * 0.3)),
             param1=50,
             param2=30,
-            minRadius=int(min(head_w, head_h) * 0.05),
-            maxRadius=int(min(head_w, head_h) * 0.15)
+            minRadius=min_radius,
+            maxRadius=max_radius
         )
         
         eyes = {}
