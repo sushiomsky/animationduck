@@ -326,8 +326,8 @@ class HandDrawnAnimator:
             wing_angle = np.sin(t * np.pi * 8) * 50
             
             # Body squash and stretch
-            squash_y = 0.9 + abs(np.sin(t * np.pi * 6)) * 0.2
-            squash_x = 2.0 - squash_y
+            squash_y = 0.9 + abs(np.sin(t * np.pi * 6)) * 0.2  # Range: 0.9 to 1.1
+            squash_x = 1.0 / squash_y  # Inverse to preserve volume
             
             canvas = self._create_canvas_with_noise(width, height)
             canvas_array = np.array(canvas)

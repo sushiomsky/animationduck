@@ -120,15 +120,6 @@ class ComicStyleEffect:
         result[edges < 128] = result[edges < 128] * 0.15  # Much darker
         
         return result.astype(np.uint8)
-        posterized = self._posterize(smooth, self.color_levels)
-        
-        # Detect edges
-        edges = self._detect_edges(img_array)
-        
-        # Combine posterized image with edges
-        result = self._combine_with_edges(posterized, edges)
-        
-        return Image.fromarray(result)
     
     def _posterize(self, image, levels):
         """
