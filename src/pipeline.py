@@ -43,8 +43,6 @@ class AnimationDuckPipeline:
             text_description: Natural language description for complex sequences (default: None)
         """
         self.comic_effect = ComicStyleEffect(edge_thickness, color_levels)
-        self.frame_generator = AnimationFrameGenerator(num_frames, animation_type)
-        self.gif_creator = GIFCreator(duration, loop)
         self.realistic_mode = realistic_mode
         self.hand_drawn_mode = hand_drawn_mode
         self.text_description = text_description
@@ -53,17 +51,19 @@ class AnimationDuckPipeline:
         if text_description:
             self.parser = AnimationParser()
             self.parsed_sequence = self.parser.parse(text_description)
-            # Override num_frames based on complexity
+            # Override num_frames and duration based on complexity
             num_frames = self.parser.get_suggested_frames(self.parsed_sequence)
             duration = self.parser.get_suggested_duration(self.parsed_sequence)
             # Force hand-drawn mode for text descriptions (best quality)
-            hand_drawn_mode = True
             self.hand_drawn_mode = True
-            self.gif_creator = GIFCreator(duration, loop)
         
-        if realistic_mode or hand_drawn_mode:
+        # Initialize frame generator and GIF creator with final values
+        self.frame_generator = AnimationFrameGenerator(num_frames, animation_type)
+        self.gif_creator = GIFCreator(duration, loop)
+        
+        if realistic_mode or self.hand_drawn_mode:
             self.detector = DucklingDetector()
-            if hand_drawn_mode:
+            if self.hand_drawn_mode:
                 self.hand_drawn_animator = HandDrawnAnimator(num_frames, animation_type)
             else:
                 self.realistic_animator = RealisticDucklingAnimator(num_frames, animation_type)

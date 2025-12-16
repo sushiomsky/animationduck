@@ -322,13 +322,8 @@ class SequenceComposer:
         text_x = int(width * 0.75)
         text_y = int(height * 0.55)
         
-        # Try to use a larger font
-        try:
-            font_size = min(width, height) // 8
-            # PIL doesn't always have font support, so we'll use default
-            font = None  # Will use default font
-        except:
-            font = None
+        # Use default font (PIL doesn't always have font support)
+        font = None
         
         # Draw text with outline for visibility
         outline_color = 'black'

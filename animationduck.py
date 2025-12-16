@@ -124,7 +124,7 @@ Examples:
         loop=args.loop,
         realistic_mode=args.realistic,
         hand_drawn_mode=args.hand_drawn,
-        text_description=args.describe if hasattr(args, 'describe') else None
+        text_description=args.describe
     )
     
     # Process images
