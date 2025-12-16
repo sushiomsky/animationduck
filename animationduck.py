@@ -20,12 +20,19 @@ def main():
         description='Create animated comic-style GIFs from still images',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+Animation Types:
+  Simple (whole image): bounce, rotate, scale, wobble
+  Realistic (body parts): walk, jump, fly, idle, blink
+
 Examples:
-  # Basic usage with bounce animation
+  # Basic bounce animation
   python animationduck.py input.jpg -o output.gif
 
-  # Wobble animation with custom settings
-  python animationduck.py duck.png -o duck.gif -a wobble -f 15 -d 80
+  # Realistic walking duckling
+  python animationduck.py duck.png -o duck.gif -r -a walk -f 15
+
+  # Flying duckling with comic style
+  python animationduck.py duck.jpg -o fly.gif -r -a fly
 
   # Without comic style effect
   python animationduck.py photo.jpg -o photo.gif --no-comic-style
@@ -38,8 +45,11 @@ Examples:
     parser.add_argument('input', nargs='+', help='Input image file(s)')
     parser.add_argument('-o', '--output', required=True, 
                         help='Output GIF file or directory for batch processing')
+    parser.add_argument('-r', '--realistic', action='store_true',
+                        help='Enable realistic mode (detect duckling parts and animate them)')
     parser.add_argument('-a', '--animation', 
-                        choices=['bounce', 'rotate', 'scale', 'wobble'],
+                        choices=['bounce', 'rotate', 'scale', 'wobble', 
+                                'walk', 'jump', 'fly', 'idle', 'blink'],
                         default='bounce',
                         help='Animation type (default: bounce)')
     parser.add_argument('-f', '--frames', type=int, default=10,
@@ -63,6 +73,13 @@ Examples:
             print(f"Error: Input file not found: {input_file}")
             sys.exit(1)
     
+    # Check if realistic animations are used with realistic mode
+    realistic_anims = ['walk', 'jump', 'fly', 'idle', 'blink']
+    if args.animation in realistic_anims and not args.realistic:
+        print(f"Note: Animation '{args.animation}' works best with realistic mode (-r flag)")
+        print(f"Enabling realistic mode automatically...")
+        args.realistic = True
+    
     # Create pipeline
     pipeline = AnimationDuckPipeline(
         edge_thickness=args.edge_thickness,
@@ -70,7 +87,8 @@ Examples:
         num_frames=args.frames,
         animation_type=args.animation,
         duration=args.duration,
-        loop=args.loop
+        loop=args.loop,
+        realistic_mode=args.realistic
     )
     
     # Process images
@@ -94,6 +112,8 @@ Examples:
             )
     except Exception as e:
         print(f"Error: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 

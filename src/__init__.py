@@ -6,6 +6,15 @@ from .pipeline import AnimationDuckPipeline
 from .comic_style import ComicStyleEffect
 from .animation import AnimationFrameGenerator
 from .gif_creator import GIFCreator
+from .duckling_detector import DucklingDetector
+from .realistic_animator import RealisticDucklingAnimator
 
 __version__ = "1.0.0"
-__all__ = ['AnimationDuckPipeline', 'ComicStyleEffect', 'AnimationFrameGenerator', 'GIFCreator']
+__all__ = [
+    'AnimationDuckPipeline',
+    'ComicStyleEffect', 
+    'AnimationFrameGenerator',
+    'GIFCreator',
+    'DucklingDetector',
+    'RealisticDucklingAnimator'
+]

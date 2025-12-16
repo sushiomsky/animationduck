@@ -5,6 +5,8 @@ from PIL import Image
 from .comic_style import ComicStyleEffect
 from .animation import AnimationFrameGenerator
 from .gif_creator import GIFCreator
+from .duckling_detector import DucklingDetector
+from .realistic_animator import RealisticDucklingAnimator
 
 
 class AnimationDuckPipeline:
@@ -16,7 +18,8 @@ class AnimationDuckPipeline:
                  num_frames=10,
                  animation_type='bounce',
                  duration=100,
-                 loop=0):
+                 loop=0,
+                 realistic_mode=False):
         """
         Initialize the animation pipeline.
         
@@ -24,13 +27,21 @@ class AnimationDuckPipeline:
             edge_thickness: Thickness of comic-style edges (default: 2)
             color_levels: Number of color levels for comic effect (default: 8)
             num_frames: Number of animation frames (default: 10)
-            animation_type: Type of animation ('bounce', 'rotate', 'scale', 'wobble')
+            animation_type: Type of animation 
+                Simple: 'bounce', 'rotate', 'scale', 'wobble'
+                Realistic: 'walk', 'jump', 'fly', 'idle', 'blink'
             duration: Frame duration in milliseconds (default: 100)
             loop: Number of times to loop (0 = infinite)
+            realistic_mode: Enable realistic duckling detection and animation (default: False)
         """
         self.comic_effect = ComicStyleEffect(edge_thickness, color_levels)
         self.frame_generator = AnimationFrameGenerator(num_frames, animation_type)
         self.gif_creator = GIFCreator(duration, loop)
+        self.realistic_mode = realistic_mode
+        
+        if realistic_mode:
+            self.detector = DucklingDetector()
+            self.realistic_animator = RealisticDucklingAnimator(num_frames, animation_type)
     
     def process(self, input_path, output_path, apply_comic_style=True):
         """
@@ -57,8 +68,14 @@ class AnimationDuckPipeline:
             image = self.comic_effect.apply(image)
         
         # Generate animation frames
-        print(f"Generating {self.frame_generator.num_frames} animation frames ({self.frame_generator.animation_type})...")
-        frames = self.frame_generator.generate_frames(image)
+        if self.realistic_mode:
+            print(f"Detecting duckling and body parts...")
+            parts = self.detector.detect_duckling(image)
+            print(f"Generating {self.realistic_animator.num_frames} realistic animation frames ({self.realistic_animator.animation_type})...")
+            frames = self.realistic_animator.animate(image, parts)
+        else:
+            print(f"Generating {self.frame_generator.num_frames} animation frames ({self.frame_generator.animation_type})...")
+            frames = self.frame_generator.generate_frames(image)
         
         # Create GIF
         print(f"Creating animated GIF at {output_path}...")
