@@ -68,7 +68,8 @@ class GIFCreator:
             # Convert to RGB first
             rgb_frame = frame.convert('RGB')
             # Convert to palette mode with specified number of colors
-            palette_frame = rgb_frame.quantize(colors=colors, method=2)
+            # Using MEDIANCUT method (2) for better color quantization
+            palette_frame = rgb_frame.quantize(colors=colors, method=Image.Quantize.MEDIANCUT)
             optimized_frames.append(palette_frame)
         
         # Save as animated GIF
