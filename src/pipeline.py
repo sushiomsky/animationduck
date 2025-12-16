@@ -7,6 +7,7 @@ from .animation import AnimationFrameGenerator
 from .gif_creator import GIFCreator
 from .duckling_detector import DucklingDetector
 from .realistic_animator import RealisticDucklingAnimator
+from .handdrawn_animator import HandDrawnAnimator
 
 
 class AnimationDuckPipeline:
@@ -19,7 +20,8 @@ class AnimationDuckPipeline:
                  animation_type='bounce',
                  duration=100,
                  loop=0,
-                 realistic_mode=False):
+                 realistic_mode=False,
+                 hand_drawn_mode=False):
         """
         Initialize the animation pipeline.
         
@@ -30,18 +32,24 @@ class AnimationDuckPipeline:
             animation_type: Type of animation 
                 Simple: 'bounce', 'rotate', 'scale', 'wobble'
                 Realistic: 'walk', 'jump', 'fly', 'idle', 'blink'
+                Hand-drawn: 'walk', 'jump', 'fly', 'idle', 'excited'
             duration: Frame duration in milliseconds (default: 100)
             loop: Number of times to loop (0 = infinite)
             realistic_mode: Enable realistic duckling detection and animation (default: False)
+            hand_drawn_mode: Enable hand-drawn cartoon style animation (default: False)
         """
         self.comic_effect = ComicStyleEffect(edge_thickness, color_levels)
         self.frame_generator = AnimationFrameGenerator(num_frames, animation_type)
         self.gif_creator = GIFCreator(duration, loop)
         self.realistic_mode = realistic_mode
+        self.hand_drawn_mode = hand_drawn_mode
         
-        if realistic_mode:
+        if realistic_mode or hand_drawn_mode:
             self.detector = DucklingDetector()
-            self.realistic_animator = RealisticDucklingAnimator(num_frames, animation_type)
+            if hand_drawn_mode:
+                self.hand_drawn_animator = HandDrawnAnimator(num_frames, animation_type)
+            else:
+                self.realistic_animator = RealisticDucklingAnimator(num_frames, animation_type)
     
     def process(self, input_path, output_path, apply_comic_style=True):
         """
@@ -64,11 +72,20 @@ class AnimationDuckPipeline:
         
         # Apply comic style effect if requested
         if apply_comic_style:
-            print("Applying comic style effect...")
-            image = self.comic_effect.apply(image)
+            if self.hand_drawn_mode:
+                print("Applying hand-drawn comic style effect...")
+                image = self.comic_effect.apply(image, hand_drawn_style=True)
+            else:
+                print("Applying comic style effect...")
+                image = self.comic_effect.apply(image)
         
         # Generate animation frames
-        if self.realistic_mode:
+        if self.hand_drawn_mode:
+            print(f"Detecting duckling and body parts...")
+            parts = self.detector.detect_duckling(image)
+            print(f"Generating {self.hand_drawn_animator.num_frames} hand-drawn animation frames ({self.hand_drawn_animator.animation_type})...")
+            frames = self.hand_drawn_animator.animate(image, parts)
+        elif self.realistic_mode:
             print(f"Detecting duckling and body parts...")
             parts = self.detector.detect_duckling(image)
             print(f"Generating {self.realistic_animator.num_frames} realistic animation frames ({self.realistic_animator.animation_type})...")

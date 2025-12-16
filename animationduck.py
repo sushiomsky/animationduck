@@ -23,16 +23,20 @@ def main():
 Animation Types:
   Simple (whole image): bounce, rotate, scale, wobble
   Realistic (body parts): walk, jump, fly, idle, blink
+  Hand-drawn (classical cartoon): walk, jump, fly, idle, excited
 
 Examples:
   # Basic bounce animation
   python animationduck.py input.jpg -o output.gif
 
+  # Hand-drawn walking duckling (classical cartoon style)
+  python animationduck.py duck.png -o duck.gif --hand-drawn -a walk -f 15
+
+  # Excited duckling animation
+  python animationduck.py duck.jpg -o excited.gif --hand-drawn -a excited
+
   # Realistic walking duckling
   python animationduck.py duck.png -o duck.gif -r -a walk -f 15
-
-  # Flying duckling with comic style
-  python animationduck.py duck.jpg -o fly.gif -r -a fly
 
   # Without comic style effect
   python animationduck.py photo.jpg -o photo.gif --no-comic-style
@@ -47,9 +51,11 @@ Examples:
                         help='Output GIF file or directory for batch processing')
     parser.add_argument('-r', '--realistic', action='store_true',
                         help='Enable realistic mode (detect duckling parts and animate them)')
+    parser.add_argument('--hand-drawn', action='store_true',
+                        help='Enable hand-drawn cartoon mode (classical animation principles)')
     parser.add_argument('-a', '--animation', 
                         choices=['bounce', 'rotate', 'scale', 'wobble', 
-                                'walk', 'jump', 'fly', 'idle', 'blink'],
+                                'walk', 'jump', 'fly', 'idle', 'blink', 'excited'],
                         default='bounce',
                         help='Animation type (default: bounce)')
     parser.add_argument('-f', '--frames', type=int, default=10,
@@ -73,12 +79,21 @@ Examples:
             print(f"Error: Input file not found: {input_file}")
             sys.exit(1)
     
-    # Check if realistic animations are used with realistic mode
-    realistic_anims = ['walk', 'jump', 'fly', 'idle', 'blink']
-    if args.animation in realistic_anims and not args.realistic:
-        print(f"Note: Animation '{args.animation}' works best with realistic mode (-r flag)")
-        print(f"Enabling realistic mode automatically...")
-        args.realistic = True
+    # Check if realistic or hand-drawn animations are used
+    realistic_anims = ['walk', 'jump', 'fly', 'idle', 'blink', 'excited']
+    if args.animation in realistic_anims and not (args.realistic or args.hand_drawn):
+        print(f"Note: Animation '{args.animation}' works best with realistic or hand-drawn mode")
+        if args.animation == 'excited':
+            print(f"Enabling hand-drawn mode automatically for 'excited' animation...")
+            args.hand_drawn = True
+        else:
+            print(f"Enabling realistic mode automatically...")
+            args.realistic = True
+    
+    # Hand-drawn mode overrides realistic mode
+    if args.hand_drawn and args.realistic:
+        print("Note: Hand-drawn mode enabled, realistic mode will be ignored")
+        args.realistic = False
     
     # Create pipeline
     pipeline = AnimationDuckPipeline(
@@ -88,7 +103,8 @@ Examples:
         animation_type=args.animation,
         duration=args.duration,
         loop=args.loop,
-        realistic_mode=args.realistic
+        realistic_mode=args.realistic,
+        hand_drawn_mode=args.hand_drawn
     )
     
     # Process images

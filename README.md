@@ -2,21 +2,37 @@
 
 Create animated comic-style duckling GIFs from still images! This application transforms your still images into fun, animated GIFs with cartoon/comic-style effects. Designed to run on low-end hardware with CPU-only processing.
 
+**Now with classical hand-drawn animation principles for professional cartoon quality!**
+
 **Inspired by the playful, energetic style of DuckDice GIFs on Tenor!**
 
 ## Features
 
 - **Comic Style Effects**: Apply cartoon/comic-style effects with edge detection and color posterization
-- **Two Animation Modes**:
+- **Three Animation Modes**:
   - **Simple Mode**: Animate the entire image (bounce, rotate, scale, wobble)
-  - **Realistic Mode**: Detect duckling parts and animate them individually for lifelike movements
+  - **Realistic Mode**: Detect duckling parts and animate them individually
+  - **Hand-Drawn Mode** ⭐ NEW: Classical hand-drawn cartoon animation with:
+    - Squash & stretch principle
+    - Anticipation and follow-through
+    - Exaggerated movements
+    - Motion blur/smear frames
+    - Rubber-hose style limbs
+    - Expressive eyes and expressions
+    - Frame-by-frame variations
+- **Hand-Drawn Animations** ⭐ NEW: 
+  - `walk` - Walking with exaggerated bobbing, rubber-hose legs, follow-through
+  - `jump` - Jumping with anticipation (squat), arc, overshoot, and settle
+  - `fly` - Flying with exaggerated wing flapping and hovering
+  - `idle` - Breathing with micro-movements and head turns
+  - `excited` - Celebration animation with rapid bouncing
 - **Realistic Animations**: 
   - `walk` - Walking with leg movement and head bobbing
   - `jump` - Jumping with leg compression and wing flapping
   - `fly` - Flying with continuous wing flapping
   - `idle` - Breathing and occasional head movements
   - `blink` - Eye blinking animation
-- **Duckling Detection**: Automatically detects ducklings and identifies body parts (head, eyes, body, legs, wings)
+- **Duckling Detection**: Automatically detects ducklings and identifies body parts
 - **CPU-Friendly**: Optimized for low-end hardware, no GPU required
 - **Frame-by-Frame Animation**: Generates smooth animations by creating individual frames
 - **Batch Processing**: Process multiple images at once
@@ -42,31 +58,42 @@ pip install -r requirements.txt
 python create_sample.py
 ```
 
-2. Create your first animated GIF:
+2. Create a classical hand-drawn cartoon animation:
 ```bash
-python animationduck.py examples/sample_duckling.png -o output.gif
+python animationduck.py examples/sample_duckling.png -o cartoon.gif --hand-drawn -a walk -f 16
 ```
 
-3. Try realistic walking animation:
+3. Try an excited celebration animation:
 ```bash
-python animationduck.py examples/sample_duckling.png -o walk.gif -r -a walk
+python animationduck.py examples/sample_duckling.png -o excited.gif --hand-drawn -a excited -f 20 -d 50
 ```
 
 ## Usage
 
-### Basic Usage
+### Hand-Drawn Cartoon Mode (⭐ Recommended for Best Quality)
+
+Create animations with classical hand-drawn cartoon principles:
 
 ```bash
-# Simple bounce animation
-python animationduck.py input.jpg -o output.gif
+# Walking with squash & stretch
+python animationduck.py duck.png -o walk.gif --hand-drawn -a walk -f 16 -d 70
 
-# Realistic walking animation
-python animationduck.py duck.png -o duck.gif -r -a walk
+# Jumping with anticipation
+python animationduck.py duck.png -o jump.gif --hand-drawn -a jump -f 18 -d 60
+
+# Flying with exaggerated wing flapping
+python animationduck.py duck.png -o fly.gif --hand-drawn -a fly -f 16 -d 60
+
+# Idle with breathing
+python animationduck.py duck.png -o idle.gif --hand-drawn -a idle -f 20 -d 100
+
+# Excited celebration
+python animationduck.py duck.png -o excited.gif --hand-drawn -a excited -f 20 -d 50
 ```
 
-### Realistic Animations (New!)
+### Realistic Animations
 
-The realistic mode detects duckling parts and animates them individually:
+For more subtle, realistic movements:
 
 ```bash
 # Walking duckling with leg movement
@@ -74,51 +101,33 @@ python animationduck.py duck.png -o walk.gif -r -a walk -f 15 -d 80
 
 # Jumping duckling
 python animationduck.py duck.png -o jump.gif -r -a jump -f 15 -d 70
-
-# Flying duckling with wing flapping
-python animationduck.py duck.png -o fly.gif -r -a fly -f 16 -d 60
-
-# Idle duckling with breathing
-python animationduck.py duck.png -o idle.gif -r -a idle -f 20 -d 100
-
-# Blinking eyes
-python animationduck.py duck.png -o blink.gif -r -a blink -f 10 -d 150
 ```
 
 ### Simple Animations
 
-For whole-image animations without part detection:
+For quick whole-image animations:
 
 ```bash
+# Bounce animation
+python animationduck.py input.jpg -o output.gif -a bounce
+
 # Wobble animation
 python animationduck.py duck.png -o duck_wobble.gif -a wobble
-
-# Rotate animation
-python animationduck.py duck.png -o duck_rotate.gif -a rotate
-
-# Scale (breathing) animation
-python animationduck.py duck.png -o duck_scale.gif -a scale
 ```
 
-### Custom Settings
+## Classical Hand-Drawn Animation Principles
 
-```bash
-# More frames and faster animation
-python animationduck.py input.jpg -o output.gif -f 20 -d 50
+The hand-drawn mode implements professional animation techniques:
 
-# Thicker edges and fewer colors for stronger comic effect
-python animationduck.py input.jpg -o output.gif -e 3 -c 6
-
-# Without comic style (just animation)
-python animationduck.py input.jpg -o output.gif --no-comic-style
-```
-
-### Batch Processing
-
-```bash
-# Process multiple images
-python animationduck.py image1.jpg image2.png image3.jpg -o output_dir/
-```
+1. **Squash & Stretch**: Body deforms based on movement velocity
+2. **Anticipation**: Character prepares before major actions (e.g., squatting before jumping)
+3. **Follow-Through**: Body parts continue moving after main action stops
+4. **Exaggeration**: Movements are amplified for comic effect
+5. **Timing**: Ease-in/ease-out curves for natural motion
+6. **Rubber-Hose Limbs**: Bendy, flexible limbs like classic cartoons
+7. **Motion Blur**: Smear frames for fast movements
+8. **Expressive Eyes**: Large, emotive eyes that follow action
+9. **Frame Variation**: Subtle imperfections for hand-drawn feel
 
 ## Command-Line Options
 
@@ -131,12 +140,14 @@ required arguments:
 
 optional arguments:
   -h, --help           Show help message
+  --hand-drawn         Enable hand-drawn cartoon mode (⭐ recommended)
   -r, --realistic      Enable realistic mode (detect duckling parts)
   -a, --animation      Animation type:
                        Simple: bounce, rotate, scale, wobble
                        Realistic: walk, jump, fly, idle, blink
+                       Hand-drawn: walk, jump, fly, idle, excited
                        (default: bounce)
-  -f, --frames         Number of frames (default: 10)
+  -f, --frames         Number of frames (default: 10, recommended: 16-20 for hand-drawn)
   -d, --duration       Frame duration in milliseconds (default: 100)
   -e, --edge-thickness Comic edge thickness (default: 2)
   -c, --colors         Number of color levels for comic effect (default: 8)
