@@ -25,9 +25,19 @@ Animation Types:
   Realistic (body parts): walk, jump, fly, idle, blink
   Hand-drawn (classical cartoon): walk, jump, fly, idle, excited
 
+Text-to-Animation:
+  Use --describe to create complex animations from natural language descriptions.
+  Examples:
+    "duckling rolls a dice and jumps up cheering"
+    "duckling walks then jumps excitedly"
+    "duckling flies with stars around it"
+
 Examples:
   # Basic bounce animation
   python animationduck.py input.jpg -o output.gif
+
+  # Create animation from description
+  python animationduck.py duck.png -o result.gif --describe "duckling rolls dice and jumps cheering as result is 6"
 
   # Hand-drawn walking duckling (classical cartoon style)
   python animationduck.py duck.png -o duck.gif --hand-drawn -a walk -f 15
@@ -49,6 +59,8 @@ Examples:
     parser.add_argument('input', nargs='+', help='Input image file(s)')
     parser.add_argument('-o', '--output', required=True, 
                         help='Output GIF file or directory for batch processing')
+    parser.add_argument('--describe', type=str,
+                        help='Create animation from text description (e.g., "duckling rolls dice and jumps cheering")')
     parser.add_argument('-r', '--realistic', action='store_true',
                         help='Enable realistic mode (detect duckling parts and animate them)')
     parser.add_argument('--hand-drawn', action='store_true',
@@ -79,6 +91,13 @@ Examples:
             print(f"Error: Input file not found: {input_file}")
             sys.exit(1)
     
+    # Check if text description is provided
+    if args.describe:
+        print(f"Creating animation from description: {args.describe}")
+        # Text descriptions automatically use hand-drawn mode
+        args.hand_drawn = True
+        args.realistic = False
+    
     # Check if realistic or hand-drawn animations are used
     realistic_anims = ['walk', 'jump', 'fly', 'idle', 'blink', 'excited']
     if args.animation in realistic_anims and not (args.realistic or args.hand_drawn):
@@ -104,7 +123,8 @@ Examples:
         duration=args.duration,
         loop=args.loop,
         realistic_mode=args.realistic,
-        hand_drawn_mode=args.hand_drawn
+        hand_drawn_mode=args.hand_drawn,
+        text_description=args.describe
     )
     
     # Process images

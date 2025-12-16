@@ -1,5 +1,85 @@
 # AnimationDuck Showcase 🦆
 
+## Text-to-Animation Feature ⭐ NEW
+
+### 🎯 Create Complex Animations from Descriptions
+
+Transform natural language into animated GIFs! Simply describe what you want, and AnimationDuck generates the animation automatically.
+
+```bash
+python animationduck.py duck.png -o result.gif \
+  --describe "duckling rolls dice and jumps cheering as result is 6"
+```
+
+### 📝 Example Animations
+
+#### Dice Rolling Celebration
+```bash
+python animationduck.py duck.png -o dice.gif \
+  --describe "duckling rolls dice and jumps up cheering as result is a 6"
+```
+**What happens:**
+1. Dice enters and rolls with rotation
+2. Duckling performs rolling/idle animation
+3. Dice shows the number 6
+4. Duckling jumps excitedly
+5. Cheering animation with exaggerated movements
+
+**File:** `examples/text_animation_dice.gif` (642KB, 30 frames)
+
+#### Walking with Stars
+```bash
+python animationduck.py duck.png -o stars.gif \
+  --describe "duckling walks with stars around it"
+```
+**What happens:**
+1. Duckling walks with exaggerated bobbing
+2. Stars orbit around with pulsing effect
+3. Smooth continuous loop
+
+**File:** `examples/text_animation_stars.gif` (492KB, 17 frames)
+
+#### Flying with Hearts
+```bash
+python animationduck.py duck.png -o hearts.gif \
+  --describe "duckling flies with hearts"
+```
+**What happens:**
+1. Duckling flies with wing flapping
+2. Hearts float upward continuously
+3. Hovering motion with body tilt
+
+**File:** `examples/text_animation_hearts.gif` (208KB, 17 frames)
+
+### 🎨 Supported Features
+
+**Actions:**
+- walk, jump, fly, idle, cheer, celebrate, roll
+
+**Objects:**
+- dice, stars, hearts, coins
+
+**Conditions:**
+- "as result is 6" - Shows numbers on dice
+- "wins", "succeeds" - Success indicators
+
+**Parsing:**
+- Multi-action sequences: "walks then jumps"
+- Natural language: "duckling walks with stars"
+- Contextual conditions: "cheering as result is 6"
+
+### 📊 How It Works
+
+1. **Parse Description** → Extract actions, objects, emotions
+2. **Allocate Frames** → Distribute based on action complexity
+3. **Generate Animation** → Hand-drawn quality for each action
+4. **Add Objects** → Animate props with appropriate physics
+5. **Compose Sequence** → Smooth transitions between actions
+
+See [TEXT_TO_ANIMATION.md](TEXT_TO_ANIMATION.md) for full documentation!
+
+---
+
 ## Classical Hand-Drawn Cartoon Animation
 
 ### 🎯 Mission Accomplished

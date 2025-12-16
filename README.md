@@ -4,15 +4,23 @@ Create animated comic-style duckling GIFs from still images! This application tr
 
 **Now with classical hand-drawn animation principles for professional cartoon quality!**
 
+**🎉 NEW: Text-to-Animation! Create complex animations from natural language descriptions!**
+
 **Inspired by the playful, energetic style of DuckDice GIFs on Tenor!**
 
 ## Features
 
+- **Text-to-Animation** ⭐ **NEW**: Create complex animations from descriptions!
+  - Natural language parsing: "duckling rolls dice and jumps cheering"
+  - Multi-action sequences with smooth transitions
+  - Objects & props: dice, stars, hearts, coins
+  - Conditional animations: "as result is 6"
+  - See [TEXT_TO_ANIMATION.md](TEXT_TO_ANIMATION.md) for full details
 - **Comic Style Effects**: Apply cartoon/comic-style effects with edge detection and color posterization
 - **Three Animation Modes**:
   - **Simple Mode**: Animate the entire image (bounce, rotate, scale, wobble)
   - **Realistic Mode**: Detect duckling parts and animate them individually
-  - **Hand-Drawn Mode** ⭐ NEW: Classical hand-drawn cartoon animation with:
+  - **Hand-Drawn Mode** ⭐: Classical hand-drawn cartoon animation with:
     - Squash & stretch principle
     - Anticipation and follow-through
     - Exaggerated movements
@@ -20,7 +28,7 @@ Create animated comic-style duckling GIFs from still images! This application tr
     - Rubber-hose style limbs
     - Expressive eyes and expressions
     - Frame-by-frame variations
-- **Hand-Drawn Animations** ⭐ NEW: 
+- **Hand-Drawn Animations** ⭐: 
   - `walk` - Walking with exaggerated bobbing, rubber-hose legs, follow-through
   - `jump` - Jumping with anticipation (squat), arc, overshoot, and settle
   - `fly` - Flying with exaggerated wing flapping and hovering
@@ -52,6 +60,28 @@ pip install -r requirements.txt
 ```
 
 ## Quick Start
+
+### Text-to-Animation (⭐ NEW!)
+
+Create complex animations from simple descriptions:
+
+```bash
+# The example from the problem statement!
+python animationduck.py duck.png -o dice.gif \
+  --describe "duckling rolls dice and jumps cheering as result is 6"
+
+# Simple animation with objects
+python animationduck.py duck.png -o stars.gif \
+  --describe "duckling walks with stars around it"
+
+# Multiple actions
+python animationduck.py duck.png -o sequence.gif \
+  --describe "duckling jumps excitedly and flies with hearts"
+```
+
+See [TEXT_TO_ANIMATION.md](TEXT_TO_ANIMATION.md) for complete documentation!
+
+### Traditional Animation Modes
 
 1. Generate a sample duckling image:
 ```bash
@@ -140,6 +170,8 @@ required arguments:
 
 optional arguments:
   -h, --help           Show help message
+  --describe           ⭐ Create animation from text description
+                       Example: "duckling rolls dice and jumps cheering"
   --hand-drawn         Enable hand-drawn cartoon mode (⭐ recommended)
   -r, --realistic      Enable realistic mode (detect duckling parts)
   -a, --animation      Animation type:
